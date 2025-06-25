@@ -39,6 +39,13 @@ prompt_improvement_agent = Agent(
     - Describe text placement: "bottom left corner", "center", "floating above"
     - Enhance text visibility: "outlined text", "text with drop shadow", "contrasting background"
 
+    IMAGE-TO-IMAGE TRANSFORMATIONS:
+    - Input images (URLs, file paths) enable style transfer, editing, and variations
+    - For style transformations: "convert to 90s cartoon style", "make it anime art", "oil painting effect"
+    - For editing: "remove text", "change background", "modify colors", "add elements"
+    - Enhance transformation descriptions: "vibrant 90s cartoon aesthetic with bold outlines and bright colors"
+    - Maintain core elements while applying new style: "preserve character pose and composition"
+
     GAMING/ADVERTISING CONTENT:
     - For game ads: emphasize dynamic action, vibrant colors, eye-catching design
     - Include marketing elements: "call-to-action button", "promotional design", "engaging layout"
@@ -55,6 +62,10 @@ prompt_improvement_agent = Agent(
     EXAMPLE:
     Basic: "gaming ad with anime girl, sword, snow, PLAY NOW button"
     Improved: "Professional mobile game advertisement featuring a fierce anime warrior girl with flowing silver hair, wielding an ornate katana with blue energy effects. She stands confidently in a snow-covered feudal Japanese village with traditional architecture. Bold white 'PLAY NOW' text with glowing blue outline positioned in bottom left corner on dark semi-transparent background. Dynamic action pose, vibrant colors, high contrast lighting, cinematic composition, detailed anime art style, mobile game UI aesthetic."
+
+    IMG2IMG EXAMPLE:
+    Basic: "Make this a 90s cartoon"
+    Improved: "Transform into vibrant 90s cartoon style with bold black outlines, bright saturated colors, and classic animation aesthetic. Maintain original composition and character pose while applying retro cartoon visual effects, cell-shaded appearance, and nostalgic animation quality reminiscent of 1990s animated series."
 
     Return ONLY the improved prompt text, no explanations or additional commentary.
     """

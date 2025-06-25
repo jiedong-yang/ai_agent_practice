@@ -177,17 +177,38 @@ def save_image_with_metadata(
         raise Exception(f"Error saving image with metadata: {str(e)}")
 
 
-async def formatting_params_from_prompt(prompt: str) -> ImageGenParams:
-    """Enhanced parameter extraction with all 14 allowed aspect ratios"""
+async def formatting_params_from_prompt(prompt: str, input_image_url: str = None) -> ImageGenParams:
+    """Enhanced parameter extraction with all 14 allowed aspect ratios and img2img support"""
+
+    # If input_image_url is provided, extract it from the prompt or use directly
+    detected_input_image = input_image_url
+
+    if not detected_input_image:
+        # Look for URLs in the prompt
+        import re
+        url_pattern = r'https?://[^\s]+'
+        urls = re.findall(url_pattern, prompt)
+        if urls:
+            detected_input_image = urls[0]
+            # Clean up the prompt by removing the URL
+            prompt = re.sub(url_pattern, '', prompt).strip()
+
     agent = Agent(
         'google-gla:gemini-2.5-flash',
         system_prompt=f"""
         Extract image generation parameters from the input prompt and return them in the specified format.
 
+        INPUT IMAGE HANDLING:
+        - If an input image is provided, this enables img2img transformation capabilities
+        - Input image URL/path: {detected_input_image if detected_input_image else 'None'}
+        - For img2img with "match aspect ratio" requests, use "match_input_image" as aspect_ratio
+
         CRITICAL ASPECT RATIO RULES:
         - ONLY use these exact values: "match_input_image", "1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3", "5:4", "4:5", "21:9", "9:21", "2:1", "1:2"
+        - If prompt mentions "match aspect ratio" or "same aspect ratio" AND input image exists → use "match_input_image"
 
         ASPECT RATIO SELECTION GUIDE:
+        - "match_input_image" = Match the input image dimensions (for img2img)
         - "1:1" = Square (social media posts, logos, icons, profile pictures)
         - "16:9" = Landscape widescreen (scenery, cinematic shots, desktop wallpapers)
         - "9:16" = Portrait mobile (phone wallpapers, TikTok, Instagram stories)
@@ -201,7 +222,6 @@ async def formatting_params_from_prompt(prompt: str) -> ImageGenParams:
         - "9:21" = Ultra-tall portrait
         - "2:1" = Panoramic landscape
         - "1:2" = Tall panoramic portrait
-        - "match_input_image" = Use when there's an input image to match
 
         ASPECT RATIO KEYWORD DETECTION:
         Square (1:1): "square", "logo", "icon", "instagram post", "profile picture"
@@ -212,9 +232,11 @@ async def formatting_params_from_prompt(prompt: str) -> ImageGenParams:
         Film landscape (3:2): "35mm", "film", "photo", "DSLR"
         Ultra-wide (21:9): "ultrawide", "cinema", "anamorphic"
         Panoramic (2:1): "panoramic", "wide panorama"
+        Match input (match_input_image): "match aspect ratio", "same aspect ratio", "keep aspect ratio"
 
         CONTENT-BASED DETECTION:
         If no explicit aspect ratio is mentioned, choose based on typical content:
+        - Input image + no specific aspect ratio → "match_input_image" 
         - Landscapes/scenery/cityscapes → "16:9"
         - People portraits/headshots → "3:4" 
         - Mobile/phone content → "9:16"
@@ -224,25 +246,30 @@ async def formatting_params_from_prompt(prompt: str) -> ImageGenParams:
         - Panoramic views → "2:1"
 
         OTHER PARAMETERS:
-        - Extract the main visual description for the prompt field
+        - Extract the main visual description for the prompt field (remove URLs)
+        - Set input_image to the detected URL/path if found
         - Look for seed numbers, format preferences (PNG/JPG), safety requirements
         - Default output_format is "png"
         - Default safety_tolerance is 2
 
         EXAMPLES:
         "anime girl playing guitar, 16:9" → aspect_ratio: "16:9"
+        "Make this a 90s cartoon, match aspect ratio" → aspect_ratio: "match_input_image" (if input image exists)
+        "transform this image into oil painting style" → aspect_ratio: "match_input_image" (if input image exists)
         "square logo design" → aspect_ratio: "1:1"  
         "portrait of a warrior" → aspect_ratio: "3:4"
-        "mobile wallpaper design" → aspect_ratio: "9:16"
-        "ultrawide cinematic scene" → aspect_ratio: "21:9"
-        "traditional landscape photo" → aspect_ratio: "4:3"
-        "35mm film style portrait" → aspect_ratio: "2:3"
         """,
         output_type=ImageGenParams
     )
 
     result = await agent.run(prompt)
-    return result.output
+    params = result.output
+
+    # Ensure input_image is set correctly
+    if detected_input_image:
+        params.input_image = detected_input_image
+
+    return params
 
 
 def generate_images_with_enhanced_save(params: ImageGenParams, prompt: str, custom_filename: str = None) -> Dict[
