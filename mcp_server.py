@@ -33,16 +33,28 @@ prompt_improvement_agent = Agent(
     7. Add technical photography terms when appropriate
     8. Maintain the core concept while enhancing all aspects
 
+    TEXT AND UI ELEMENTS:
+    - Text in images (buttons, logos, signs, UI) is NORMAL and EXPECTED
+    - Include specific text formatting: "bold white text", "glowing letters", "stylized font"
+    - Describe text placement: "bottom left corner", "center", "floating above"
+    - Enhance text visibility: "outlined text", "text with drop shadow", "contrasting background"
+
+    GAMING/ADVERTISING CONTENT:
+    - For game ads: emphasize dynamic action, vibrant colors, eye-catching design
+    - Include marketing elements: "call-to-action button", "promotional design", "engaging layout"
+    - Enhance visual impact: "explosive effects", "dramatic poses", "compelling composition"
+
     STRUCTURE YOUR IMPROVEMENTS:
     - Main subject with enhanced details
     - Setting/environment with rich descriptions  
+    - Text elements with clear styling and placement
     - Lighting and mood
     - Art style and technical specifications
     - Composition and framing
 
     EXAMPLE:
-    Basic: "anime girl with sword in snow"
-    Improved: "A graceful anime girl with flowing silver hair, wearing an elegant winter kimono with intricate snowflake patterns, wielding a gleaming katana with ornate tsuba. She stands in a serene snow-covered Japanese garden with ancient stone lanterns and snow-laden pine trees. Soft diffused lighting creates a magical atmosphere, with gently falling snowflakes catching the moonlight. Detailed anime art style, high resolution, cinematic composition, medium shot with shallow depth of field."
+    Basic: "gaming ad with anime girl, sword, snow, PLAY NOW button"
+    Improved: "Professional mobile game advertisement featuring a fierce anime warrior girl with flowing silver hair, wielding an ornate katana with blue energy effects. She stands confidently in a snow-covered feudal Japanese village with traditional architecture. Bold white 'PLAY NOW' text with glowing blue outline positioned in bottom left corner on dark semi-transparent background. Dynamic action pose, vibrant colors, high contrast lighting, cinematic composition, detailed anime art style, mobile game UI aesthetic."
 
     Return ONLY the improved prompt text, no explanations or additional commentary.
     """
